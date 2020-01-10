@@ -9,10 +9,8 @@ from tqdm import tqdm
 import multiprocessing
 import math
 
-
 class AverageMeter(object):
     """Computes and stores the average and current value"""
-
     def __init__(self):
         self.reset()
 
@@ -28,7 +26,6 @@ class AverageMeter(object):
         self.count += n
         self.avg = self.sum / self.count
 
-
 def main(label_paths):
     out_array = AverageMeter()
     area_dict = {}
@@ -41,8 +38,7 @@ def main(label_paths):
         get_one_hot = np.eye(8)[encode_mask]
         get_one_hot = np.sum(np.sum(get_one_hot, 0), 0)
         out_array.update(get_one_hot.copy())
-    return out_array.avg / 100
-
+    return out_array.avg/100
 
 if __name__ == '__main__':
     data_dir = './data_list/train.csv'
@@ -53,7 +49,7 @@ if __name__ == '__main__':
     pool = multiprocessing.Pool(processes=thread_num)
     result = []
     for i in tqdm(range(0, len(label_paths), n)):
-        result.append(pool.apply_async(main, (label_paths[i: i + n],)))
+        result.append(pool.apply_async(main, (label_paths[i: i+n],)))
     for step, r in enumerate(tqdm(result)):
         arr = r.get()
         if step == 0:
@@ -61,7 +57,7 @@ if __name__ == '__main__':
         else:
             out_array += arr
     out_array /= thread_num
-    explode = []
+    explode=[]
     l = []
 
     for i in range(8):
@@ -77,13 +73,13 @@ if __name__ == '__main__':
     # plt.figure(figsize=(15,15))
     # print(values)
     # plt.pie(values,explode=explode,labels=l,autopct='%1.1f%%')
-
+    
     # plt.title('统计面积')#绘制标题
     # plt.savefig('./statistic.png')#保存图片
     # plt.rcParams['font.sans-serif']='SimHei'
     # plt.figure(figsize=(15,15))
     # plt.pie(values[1:],explode=explode[1:],labels=l[1:],autopct='%1.1f%%')
-
+    
     # plt.title('统计面积')#绘制标题
     # plt.savefig('./statistic_no_zero.png')#保存图片
     pool.close()
